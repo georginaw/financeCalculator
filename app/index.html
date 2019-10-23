@@ -25,9 +25,33 @@
 <section class="container-fluid">
     <div class="row">
         <form class="col-12" id="borrow-repay-form">
-
+            <div>
+                <p>Enter the amount you wish to borrow:</p>
+                <input type="text" id="borrow-input" min="1">
+            </div>
+            <div id="admin-fee"></div>
+            <div id="tier-fee"></div>
+            <div id="total-repay-amount"></div>
+            <div>
+                <p>Enter your expected annual salary after graduating:</p>
+                <input type="text" id="salary-input" min="1">
+            </div>
+            <div>
+                <p>Enter the monthly repayment percentage (minimum 10%):</p>
+                <input type="text" id="rate-input" min="1">
+            </div>
+            <div>
+                <p>Your monthly repayment amount:</p>
+                <div id="monthly-repay-amount">100</div>
+            </div>
+            <div>
+                <p>Duration of repayment in months:</p>
+                <div id="repay-duration">100</div>
+            </div>
+            <div>
+                <input name="submit" type="submit" value="Calculate">
+            </div>
         </form>
-        <form class="col-12" id="repay-rate-form"></form>
     </div>
 
 
