@@ -1,0 +1,14 @@
+{
+  "files": [
+    "app/js/main.ts"
+  ],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "target": "es5",
+    "lib": [
+      "dom",
+      "ES2015"
+    ]
+  }
+
+}
