@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Mayden Finance Calculator</title>
     <script defer src="js/main.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
     <link href="css/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -28,6 +28,7 @@
             <div>
                 <p>Enter the amount you wish to borrow:</p>
                 <input type="text" id="borrow-input" min="1">
+                <span id="borrow-input-error"></span>
             </div>
             <div id="admin-fee"></div>
             <div id="tier-fee"></div>
@@ -35,10 +36,12 @@
             <div>
                 <p>Enter your expected annual salary after graduating:</p>
                 <input type="text" id="salary-input" min="1">
+                <span id="salary-input-error"></span>
             </div>
             <div>
                 <p>Enter the monthly repayment percentage (minimum 10%):</p>
                 <input type="text" id="rate-input" min="1">
+                <span id="rate-input-error"></span>
             </div>
             <div>
                 <p>Your monthly repayment amount:</p>
@@ -49,7 +52,7 @@
                 <div id="repay-duration">100</div>
             </div>
             <div>
-                <input name="submit" type="submit" value="Calculate">
+                <button type="submit">Calculate</button>
             </div>
         </form>
     </div>
