@@ -50,20 +50,23 @@ formInputs.forEach(function(inputField) {
 //     }
 // })
 
+let errorMessages = {
+    isEmpty: "This must not be empty",
+    isInvalid: 'This must be a number',
+    borrowInput: 'There is a problem with the amount, it must be between £1 and £' + currentCourseFee + '.',
+    rateInput: 'This must be a number between 1 and 100'
+}
+
 function validateInput(inputField) {
-    let isEmptyErrorMessage = 'This must not be empty'
-    let isInvalidErrorMessage = 'This must be a number'
-    let borrowErrorMessage = 'There is a problem with the amount, it must be between £1 and £' + currentCourseFee + '.'
-    let rateErrorMessage = 'This must be a number between 1 and 100'
 
     if (inputField.value.length === 0) {
-        throwErrors(inputField, isEmptyErrorMessage)
+        handleErrors(inputField, errorMessages.isEmpty)
     } else if (isNaN(inputField.value)) {
-        throwErrors(inputField, isInvalidErrorMessage)
+        handleErrors(inputField, errorMessages.isInvalid)
     } else if (inputField.id === 'borrow-input' && inputField.value > currentCourseFee) {
-        throwErrors(inputField, borrowErrorMessage)
+        handleErrors(inputField, errorMessages.borrowInput)
     } else if (inputField.id === 'rate-input' && inputField.value > 100) {
-        throwErrors(inputField, rateErrorMessage)
+        handleErrors(inputField, errorMessages.rateInput)
     } else {
         inputField.classList.add('true')
         inputField.classList.remove('false')
@@ -71,18 +74,13 @@ function validateInput(inputField) {
     }
 }
 
-
-function throwErrors(inputField, errorMessage) {
+function handleErrors(inputField, errorMessage) {
     inputField.classList.add('false')
     inputField.classList.remove('true')
     document.querySelector('#' + inputField.id + '-error').className = 'alert-danger'
     document.querySelector('#' + inputField.id + '-error').innerHTML = errorMessage
 }
 
-
-function checkBorrowValid(value) {
-    return (value < currentCourseFee)
-}
 
 // let borrowInputValue = document.querySelector('#borrow-input').value
 // let adminFeeAmount = calculateAdminFee(borrowInputValue)
