@@ -1,40 +1,84 @@
 const currentCourseFee = 8000
-// const borrowAmountMin = 1
-// const borrowAmountMax = currentCourseFee
-// const adminFee = 0.05
-//
-// let extraFeeTiers: {
-//     tier0: {
-//         thresholdPercent: 0,
-//         threshold: currentCourseFee * this.thresholdPercent,
-//         extraFeeAmount: 0
-//     },
-//     tier1: {
-//         thresholdPercent: 0.8,
-//         threshold: currentCourseFee * this.thresholdPercent,
-//         extraFeeAmount: 500
-//     },
-//     tier2: {
-//         thresholdPercent: 0.9,
-//         threshold: currentCourseFee * this.thresholdPercent,
-//         extraFeeAmount: 1000
-//     }
-// }
+const adminFee = 0.05
+let salaryAmount = 25000
+let rateAmount = 10
+let borrowAmount
+let adminFeeAmount
+let extraFeeAmount
+let totalRepay
+let monthlyAmount
+let durationInMonths
 
-
+let extraFeeTiers = {
+    tier0: {
+        thresholdPercent: 0,
+        threshold: currentCourseFee * this.thresholdPercent,
+        extraFeeAmount: 0
+    },
+    tier1: {
+        thresholdPercent: 0.8,
+        threshold: currentCourseFee * this.thresholdPercent,
+        extraFeeAmount: 500
+    },
+    tier2: {
+        thresholdPercent: 0.9,
+        threshold: currentCourseFee * this.thresholdPercent,
+        extraFeeAmount: 1000
+    }
+]}
 
 let form = document.querySelector('#borrow-repay-form')
 let formInputs = document.querySelectorAll('#borrow-repay-form input')
 
+document.querySelector('#borrow-input').placeholder = '£1 - ' + currentCourseFee
+document.querySelector('#salary-input').placeholder = '£' + 25000
+document.querySelector('#rate-input').placeholder = 10 + '%'
+document.querySelector('#salary-input').value = 25000
+document.querySelector('#rate-input').value = 10
+
+
+form.addEventListener('mouseover', function() {
+    let errors = document.querySelectorAll('#borrow-repay-form [data-check="invalid"]')
+    if (errors.length === 0) {
+        borrowAmount = getAmount('#borrow-input')
+        console.log(borrowAmount)
+
+        salaryAmount = getAmount('#salary-input')
+        console.log(borrowAmount)
+
+        rateAmount = getAmount('#rate-input') * 0.01
+        console.log(borrowAmount)
+
+        adminFeeAmount = calculateAdminFee(borrowAmount, adminFee)
+        console.log(adminFeeAmount)
+
+        extraFeeAmount = calculateExtraFee(borrowAmount, extraFeeTiers)
+        console.log(extraFeeAmount)
+
+        totalRepay = calculateTotalRepay(borrowAmount, adminFee, extraFeeTiers)
+        console.log(totalRepay)
+
+        monthlyAmount = calculateMonthlyAmount(borrowAmount, salaryAmount, rateAmount)
+        console.log(monthlyAmount)
+
+        durationInMonths = calculateDurationInMonths(totalRepay, monthlyAmount)
+        console.log(durationInMonths)
+    }
+})
 
 formInputs.forEach(function(inputField) {
+    inputField.addEventListener('click' , function() {
+        validateInput(inputField)
+    })
     inputField.addEventListener('input' , function() {
         validateInput(inputField)
     })
     inputField.addEventListener('blur' , function() {
         validateInput(inputField)
     })
-
+    inputField.addEventListener('change' , function() {
+        validateInput(inputField)
+    })
 })
 
 // form.addEventListener('submit', function(e) {
@@ -58,7 +102,6 @@ let errorMessages = {
 }
 
 function validateInput(inputField) {
-
     if (inputField.value.length === 0) {
         handleErrors(inputField, errorMessages.isEmpty)
     } else if (isNaN(inputField.value)) {
@@ -68,56 +111,58 @@ function validateInput(inputField) {
     } else if (inputField.id === 'rate-input' && inputField.value > 100) {
         handleErrors(inputField, errorMessages.rateInput)
     } else {
-        inputField.classList.add('true')
-        inputField.classList.remove('false')
+        inputField.dataset.check = 'valid'
         document.querySelector('#' + inputField.id + '-error').innerHTML = ''
     }
 }
 
+
 function handleErrors(inputField, errorMessage) {
-    inputField.classList.add('false')
-    inputField.classList.remove('true')
+    inputField.dataset.check = 'invalid'
     document.querySelector('#' + inputField.id + '-error').className = 'alert-danger'
     document.querySelector('#' + inputField.id + '-error').innerHTML = errorMessage
 }
 
 
-// let borrowInputValue = document.querySelector('#borrow-input').value
-// let adminFeeAmount = calculateAdminFee(borrowInputValue)
-// let tierFee = calculateExtraFee(borrowInputValue)
-// let totalRepaymentAmount = calculateTotalRepay(borrowInputValue, adminFee)
-//
-//
-//
-//
-//
-// let salaryInputValue = document.querySelector('#salary-input').value
-// let rateInputValue = document.querySelector('#rate-input').value
-// let monthlyRepayAmount = 0
-// let repayDuration = 0
-//
-//
-// function calculateAdminFee(borrowAmount, adminFee) {
-//     let result = borrowAmount * adminFee
-//     return result
-// }
-//
-// function calculateExtraFee(borrowAmount, feeTiers) {
+function getAmount(id) {
+    formInputs.forEach(function(input) {
+        if (input.id === id && input.id.dataset.check) {
+            return input.value
+        }
+    })
+}
+
+
+function calculateAdminFee(borrowAmount, adminFee) {
+    let result = borrowAmount * adminFee
+    return result
+}
+
+
+// function calculateExtraFee(borrowAmount, extraFeeTiers) {
 //     let result
-//     feeTiers.forEach(function(tier) {
+//     extraFeeTiers.forEach(function (tier) {
 //         if (borrowAmount > tier.threshold) {
 //             result = tier.extraFeeAmount
 //         }
+//         return result
 //     })
-//     return result
 // }
-//
-// function calculateTotalRepay(borrowAmount, adminFee, tierFee) {
-//     let adminFeeAmount = borrowAmount * adminFee
-//     let result = borrowAmount + adminFeeAmount + tierFee
-//     return result
-// }
-//
+
+function calculateTotalRepay(borrowAmount, adminFee, tierFee) {
+    let adminFeeAmount = borrowAmount * adminFee
+    return borrowAmount + adminFeeAmount + tierFee
+}
+
+
+function calculateMonthlyAmount(totalRepayment, salaryAmount, rateAmount) {
+    return totalRepayment/(salaryAmount * rateAmount)
+}
+
+
+function calculateDurationInMonths(totalRepayment, monthlyAmount) {
+    return totalRepayment / monthlyAmount
+}
 
 
 
@@ -146,45 +191,3 @@ function handleErrors(inputField, errorMessage) {
 
 
 
-
-
-
-// let inputs = document.querySelectorAll('#borrow-repay-form input')
-// let values = {}
-// inputs.forEach(function(input) {
-//     input.addEventListener('input', function () {
-//         if (!numberInputValidation(input.value) && numberInputValidation(input.value) > 0) {
-//             input.dataset.valid = true
-//             values[input.id] = input.value
-//         } else {
-//             input.dataset.valid = false
-//         }
-//     })
-// })
-//
-//
-//
-//
-// let borrowAmountInput = document.querySelector('#borrow-input').value
-//
-// function numberInputValidation(input) {
-//     let parsedInput
-//     parsedInput = parseInt(input)
-//     if (isNaN(parsedInput)) {
-//         return true
-//     } else {
-//         return false
-//     }
-// }
-//
-//
-//
-// if (parsedInput > 0 && parsedInput <= currentCourseFee) {
-//     = parsedInput
-//     return borrowAmount
-// } else if (parsedInput < 1 || parsedInput > currentCourseFee) {
-//     // produce error message - the borrowed amount must be between 1 and {{current course fee}}
-//
-// }
-//
-// let totalRepaymentAmount
